@@ -1,2 +1,7 @@
 *.csv
 *.db
+
+###> ide ###
+/.idea/
+/.vscode/
+###< ide ###

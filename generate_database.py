@@ -18,52 +18,126 @@ tables_arr = [
     {
         'filename': 'SpellLabel',
         'table_name': 'spelllabel',
-        'create_table_query': 'CREATE TABLE {table_name} (ID int, LabelID int, SpellID int)'
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'LabelID', 'type': 'int'},
+            {'name': 'SpellID', 'type': 'int'},
+        ]
     },
     {
         'filename': 'ProfessionEffect',
         'table_name': 'professioneffect',
-        'create_table_query': 'CREATE TABLE {table_name} (ID int, ProfessionEffectTypeEnumID int, Amount int, ModifiedCraftingReagentSlotID int)'
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'ProfessionEffectTypeEnumID', 'type': 'int'},
+            {'name': 'Amount', 'type': 'int'},
+            {'name': 'ModifiedCraftingReagentSlotID', 'type': 'int'},
+        ]
     },
     {
         'filename': 'ProfessionEffectType',
         'table_name': 'professioneffecttype',
-        'create_table_query': 'CREATE TABLE {table_name} (ID int, Name_lang text, EnumID int)'
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'Name_lang', 'type': 'text'},
+            {'name': 'EnumID', 'type': 'int'},
+        ]
     },
     {
         'filename': 'ProfessionTrait',
         'table_name': 'professiontrait',
-        'create_table_query': 'CREATE TABLE {table_name} (ID int, TraitDefinitionID int)'
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'TraitDefinitionID', 'type': 'int'},
+        ]
     },
     {
         'filename': 'ProfessionTraitXEffect',
         'table_name': 'professiontraitXeffect',
-        'create_table_query': 'CREATE TABLE {table_name} (ID int, ProfessionTraitID int, ProfessionEffectID int, "_Index" int)'
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'ProfessionTraitID', 'type': 'int'},
+            {'name': 'ProfessionEffectID', 'type': 'int'},
+            {'name': '_Index', 'type': 'int'},
+        ]
     },
     {
         'filename': 'ProfessionTraitXLabel',
         'table_name': 'professiontraitXlabel',
-        'create_table_query': 'CREATE TABLE {table_name} (ID int, ProfessionTraitID int, LabelID int)'
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'ProfessionTraitID', 'type': 'int'},
+            {'name': 'LabelID', 'type': 'int'},
+        ]
     },
     {
         'filename': 'TraitDefinition',
         'table_name': 'traitdefinition',
-        'create_table_query': 'CREATE TABLE {table_name} (OverrideName_lang text, OverrideSubtext_lang text, OverrideDescription_lang text, ID int, SpellID int, OverrideIcon int, OverridesSpellID int, VisibleSpellID int)'
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'OverrideName_lang', 'type': 'text'},
+            {'name': 'OverrideSubtext_lang', 'type': 'text'},
+            {'name': 'OverrideDescription_lang', 'type': 'text'},
+            {'name': 'SpellID', 'type': 'int'},
+            {'name': 'OverrideIcon', 'type': 'int'},
+            {'name': 'OverridesSpellID', 'type': 'int'},
+            {'name': 'VisibleSpellID', 'type': 'int'},
+        ]
     },
     {
         'filename': 'TraitNodeXTraitNodeEntry',
         'table_name': 'traitnodeXtraitnodeentry',
-        'create_table_query': 'CREATE TABLE {table_name} (ID int, TraitNodeID int, TraitNodeEntryID int, "_Index" int)'
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'TraitNodeID', 'type': 'int'},
+            {'name': 'TraitNodeEntryID', 'type': 'int'},
+            {'name': '_Index', 'type': 'int'},
+        ]
     },
     {
         'filename': 'TraitNodeEntry',
         'table_name': 'traitnodeentry',
-        'create_table_query': 'CREATE TABLE {table_name} (ID int, TraitDefinitionId int, MaxRanks int, NodeEntryType int, TraitSubTreeID int)'
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'TraitDefinitionID', 'type': 'int'},
+            {'name': 'MaxRanks', 'type': 'int'},
+            {'name': 'NodeEntryType', 'type': 'int'},
+            {'name': 'TraitSubTreeID', 'type': 'int'},
+        ]
+    },
+    {
+        'filename': 'TraitNodeGroupXTraitNode',
+        'table_name': 'traitnodegroupXtraitnode',
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'TraitNodeGroupID', 'type': 'int'},
+            {'name': 'TraitNodeID', 'type': 'int'},
+            {'name': '_Index', 'type': 'int'},
+        ]
+    },
+    {
+        'filename': 'TraitCond',
+        'table_name': 'traitcond',
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'TraitTreeID', 'type': 'int'},
+            {'name': 'TraitNodeGroupID', 'type': 'int'},
+            {'name': 'TraitNodeID', 'type': 'int'},
+            {'name': 'SpentAmountRequired', 'type': 'int'},
+        ]
+    },
+    {
+        'filename': 'TraitNodeXTraitCond',
+        'table_name': 'traitnodeXtraitcond',
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'TraitCondID', 'type': 'int'},
+            {'name': 'TraitNodeID', 'type': 'int'},
+        ]
     },
 ]
 
 for table in tables_arr:
-    # Read the CSV file into a pandas DataFrame
     filename = table['filename']
 
     file_path = f'{filename}.{wagoversion}.csv'
@@ -72,25 +146,34 @@ for table in tables_arr:
         print(f"The file {file_path} does not exist.")
         exit()
 
+    # Read the CSV file into a pandas DataFrame
     df = pd.read_csv(file_path)
 
-    # Extract column names from the DataFrame
-    column_names = df.columns.tolist()
-
     table_name = table['table_name']
+    columns = table['columns']
+
+    formatted_create_columns = []
+    formatted_insert_columns = []
+    for column in columns:
+        # Generate array of '{column name} {type}'
+        formatted_create_columns.append(f"{column['name']} {column['type']}")
+
+        # Generate array of '{column name}'
+        formatted_insert_columns.append(column['name'])
+
     # Create a table with columns based on the CSV headers
     drop_table_query = f"DROP TABLE IF EXISTS {table_name}"
     cur.execute(drop_table_query)
-    create_table_query = table['create_table_query'].format(table_name=table_name)
+
+    create_table_query = f'CREATE TABLE {table_name} ({', '.join(formatted_create_columns)})'
     cur.execute(create_table_query)
 
-    # Insert data into the table
-    for row in df.itertuples(index=False, name=None):
-        placeholders = ', '.join(['?' for _ in column_names])
-        insert_query = f'INSERT INTO {table_name} ({", ".join(column_names)}) VALUES ({placeholders})'
+    placeholders = ', '.join(['?' for _ in formatted_insert_columns])
+    df_selected_columns = df[formatted_insert_columns]
+    for row in df_selected_columns.itertuples(index=False, name=None):
+        insert_query = f'INSERT INTO {table_name} ({", ".join(formatted_insert_columns)}) VALUES ({placeholders})'
         cur.execute(insert_query, row)
 
-    # Commit
     conn.commit()
 
 # Close the connection
