@@ -2,119 +2,85 @@ import sqlite3
 import csv
 from prettytable import PrettyTable
 
-conn = sqlite3.connect('wow_profession_tree.db')
-cur = conn.cursor()
+if __name__ == '__main__':
+    conn = sqlite3.connect('wow_profession_tree.db')
+    cur = conn.cursor()
 
-# query = '''
-# 	select 
-# 		sl.SpellID, 
-# 		ptl.LabelID, 
-# 		ptl.ID, 
-# 		ptl.ProfessionTraitID, 
-# 		pt.TraitDefinitionID, 
-# 		td.OverrideName_lang, 
-# 		td.OverrideDescription_lang, 
-# 		--tne.ID as TraitNodeEntryID, 
-# 		tntne.TraitNodeID, 
-# 		pte.ID as pteID, 
-# 		pte._Index,
-# 		tne.MaxRanks,
-# 		pe.Amount, 
-# 		pet.Name_lang
+    query = '''
+        select
+            sl.SpellID as SpellID,
+            tntne.TraitNodeID,
+            COALESCE(tc.TraitNodeID, tntne.TraitNodeID) as ParentTraitNodeID,
+            td.OverrideName_lang as NodeName,
+            td.OverrideDescription_lang as TraitDescrip,
+            tne.MaxRanks,
+            pe.Amount,
+            pet.Name_lang as Stat,
+            pe.ModifiedCraftingReagentSlotID,
+            sla.SkillLine as ProfessionID,
+            sla.SkillupSkillLineId as ProfessionExpansionID
+            --pte.ID as pteID, -- debugging
+            --pt.ID as ptID -- debugging
 
-# 	from spelllabel sl
-# 	inner join professiontraitXlabel ptl on ptl.LabelID = sl.LabelID
-# 	inner join professiontrait pt on pt.ID = ptl.ProfessionTraitID
-# 	inner join traitdefinition td on td.ID = pt.TraitDefinitionID
-# 	inner join traitnodeentry tne on tne.TraitDefinitionID = pt.TraitDefinitionID
-# 	inner join traitnodeXtraitnodeentry tntne on tntne.TraitNodeEntryID = tne.ID
+        from traitnodeXtraitnodeentry tntne
 
-# 	-- join trait x effect
-# 	-- on professiontraitID
-# 	-- this will be many to one
-# 	-- order by _index
+        -- fetch the parent node information
+        -- must left join as parent nodes themselves are not returned here
+        left join traitnodeXtraitcond tntc on tntne.TraitNodeID = tntc.TraitNodeID
 
-# 	join professiontraitXeffect pte on pte.ProfessionTraitID = ptl.ProfessionTraitID
+        -- fetch to get the order of TraitNodes via SpentAmountRequired
+        left join traitcond tc on tntc.TraitCondID = tc.ID
 
-# 	-- join professioneffect
-# 	-- on id
+        -- fetch the number of ranks available
+        -- 1 rank for traits
+        -- many ranks for parent nodes
+        inner join traitnodeentry tne on tntne.TraitNodeEntryID = tne.ID
 
-# 	join professioneffect pe on pe.ID = pte.ProfessionEffectID
+        -- fetch trait text labels
+        inner join traitdefinition td on tne.TraitDefinitionID = td.ID
+        inner join professiontrait pt on tne.TraitDefinitionID = pt.TraitDefinitionID
 
-# 	-- join professioneffectype
-# 	-- on id or enumID
+        -- fetch all the spells(recipes) this trait is usable on
+        inner join professiontraitXlabel ptl on pt.ID = ptl.ProfessionTraitID
+        inner join spelllabel sl on ptl.LabelID = sl.LabelID
 
-# 	inner join professioneffecttype pet on pet.EnumID = pe.ProfessionEffectTypeEnumID
+        -- fetch the amount of stat awarded per rank
+        left join professiontraitXeffect pte on pt.ID = pte.ProfessionTraitID
+        left join professioneffect pe on pte.ProfessionEffectID = pe.ID
 
-# 	--where sl.SpellID = 367615
-# 	order by sl.SpellID, ptl.LabelID, pte.ID, pte._Index
-# 	--limit 20
-# '''
+        -- fetch the stat name
+        -- left join gets nodes that let you craft new recipes etc..
+        -- inner join only for stat boosting only
+        inner join professioneffecttype pet on pe.ProfessionEffectTypeEnumID = pet.EnumID
 
-query = '''
-	select
-		sl.SpellID as SpellID,
-        tntne.TraitNodeID,
-		COALESCE(tc.TraitNodeID, tntne.TraitNodeID) as ParentTraitNodeID,
-		--tntne.ID as tntneID,
-		--tne.ID as tneID,
-		--tc.ID as tcID,
-		--td.ID as tdID,
-		--pt.ID as ptID,
-		--ptl.ID as ptlID,
-		--pte.ID as pteID,
-		--tngtn.TraitNodeGroupID,
-		--tntne._Index as tntneIndex,
-		--pte._Index as pteIndex,
-		--tngtn._Index as tngtnIndex,
-		td.OverrideName_lang as NodeName,
-		--substr(td.OverrideDescription_lang, 0, 125) as TraitDescrip,
-		td.OverrideDescription_lang as TraitDescrip,
-		tne.MaxRanks,
-		pe.Amount,
-		pet.Name_lang as Stat
+        -- fetch the profession ids
+        left join skilllineability sla on sl.SpellID = sla.Spell
 
-	from traitnodeXtraitnodeentry tntne
-	inner join traitnodegroupXtraitnode tngtn on tntne.TraitNodeID = tngtn.TraitNodeID
+        --where sl.SpellID = 435318 -- debugging
 
-	left join traitnodeXtraitcond tntc on tntne.TraitNodeID = tntc.TraitNodeID
-	left join traitcond tc on tntc.TraitCondID = tc.ID
+        group by pt.ID, pte.ID, sl.SpellID
+        order by sl.SpellID, ParentTraitNodeID, tc.SpentAmountRequired
+    '''
 
-	left join traitnodeentry tne on tntne.TraitNodeEntryID = tne.ID
-	inner join traitdefinition td on tne.TraitDefinitionID = td.ID
+    cur.execute(query)
+    rows = cur.fetchall()
 
-	inner join professiontrait pt on tne.TraitDefinitionID = pt.TraitDefinitionID
-	inner join professiontraitXlabel ptl on pt.ID = ptl.ProfessionTraitID
-	inner join spelllabel sl on ptl.LabelID = sl.LabelID
+    column_names = [description[0] for description in cur.description]
 
-	left join professiontraitXeffect pte on pt.ID = pte.ProfessionTraitID
-	left join professioneffect pe on pte.ProfessionEffectID = pe.ID
-	inner join professioneffecttype pet on pe.ProfessionEffectTypeEnumID = pet.EnumID
+    conn.close()
 
-	--where sl.SpellID = 435382
-	group by pt.ID, pte.ID, sl.SpellID
-	order by sl.SpellID, ParentTraitNodeID, tc.SpentAmountRequired
-'''
+    table = PrettyTable()
 
-cur.execute(query)
-rows = cur.fetchall()
+    table.field_names = column_names
+    for row in rows:
+        table.add_row(row)
 
-column_names = [description[0] for description in cur.description]
+    #print(table)
 
-conn.close()
+    csv_file_path = 'profTalentData.csv'
+    with open(csv_file_path, 'w', newline='') as csv_file:
+        writer = csv.writer(csv_file)
+        writer.writerow(column_names)
+        writer.writerows(rows)
 
-table = PrettyTable()
-
-table.field_names = column_names
-for row in rows:
-	table.add_row(row)
-
-#print(table)
-
-csv_file_path = 'profTalentData.csv'
-with open(csv_file_path, 'w', newline='') as csv_file:
-    writer = csv.writer(csv_file)
-    writer.writerow(column_names)
-    writer.writerows(rows)
-
-print(f'The query results have been exported to {csv_file_path}.')
+    print(f'The query results have been exported to {csv_file_path}.')

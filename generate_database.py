@@ -3,17 +3,6 @@ import pandas as pd
 import sys
 import os
 
-if len(sys.argv) > 1:
-    # Read the first argument after the filename
-    wagoversion = sys.argv[1]
-else:
-    print("No wago version provided.")
-    exit()
-
-# Connect to (or create) an SQLite database
-conn = sqlite3.connect('wow_profession_tree.db')
-cur = conn.cursor()
-
 tables_arr = [
     {
         'filename': 'SpellLabel',
@@ -135,46 +124,68 @@ tables_arr = [
             {'name': 'TraitNodeID', 'type': 'int'},
         ]
     },
+    {
+        'filename': 'SkillLineAbility',
+        'table_name': 'skilllineability',
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'Spell', 'type': 'int'},
+            {'name': 'SkillLine', 'type': 'int'},
+            {'name': 'SkillupSkillLineID', 'type': 'int'},
+        ]
+    },
 ]
 
-for table in tables_arr:
-    filename = table['filename']
-
-    file_path = f'{filename}.{wagoversion}.csv'
-
-    if not os.path.exists(file_path):
-        print(f"The file {file_path} does not exist.")
+if __name__ == '__main__':
+    if len(sys.argv) > 1:
+        # Read the first argument after the filename
+        wagoversion = sys.argv[1]
+    else:
+        print("No wago version provided.")
         exit()
 
-    # Read the CSV file into a pandas DataFrame
-    df = pd.read_csv(file_path)
+    # Connect to (or create) an SQLite database
+    conn = sqlite3.connect('wow_profession_tree.db')
+    cur = conn.cursor()
 
-    table_name = table['table_name']
-    columns = table['columns']
+    for table in tables_arr:
+        filename = table['filename']
 
-    formatted_create_columns = []
-    formatted_insert_columns = []
-    for column in columns:
-        # Generate array of '{column name} {type}'
-        formatted_create_columns.append(f"{column['name']} {column['type']}")
+        file_path = f'{filename}.{wagoversion}.csv'
 
-        # Generate array of '{column name}'
-        formatted_insert_columns.append(column['name'])
+        if not os.path.exists(file_path):
+            print(f"The file {file_path} does not exist.")
+            exit()
 
-    # Create a table with columns based on the CSV headers
-    drop_table_query = f"DROP TABLE IF EXISTS {table_name}"
-    cur.execute(drop_table_query)
+        # Read the CSV file into a pandas DataFrame
+        df = pd.read_csv(file_path)
 
-    create_table_query = f'CREATE TABLE {table_name} ({', '.join(formatted_create_columns)})'
-    cur.execute(create_table_query)
+        table_name = table['table_name']
+        columns = table['columns']
 
-    placeholders = ', '.join(['?' for _ in formatted_insert_columns])
-    df_selected_columns = df[formatted_insert_columns]
-    for row in df_selected_columns.itertuples(index=False, name=None):
-        insert_query = f'INSERT INTO {table_name} ({", ".join(formatted_insert_columns)}) VALUES ({placeholders})'
-        cur.execute(insert_query, row)
+        formatted_create_columns = []
+        formatted_insert_columns = []
+        for column in columns:
+            # Generate array of '{column name} {type}'
+            formatted_create_columns.append(f"{column['name']} {column['type']}")
 
-    conn.commit()
+            # Generate array of '{column name}'
+            formatted_insert_columns.append(column['name'])
 
-# Close the connection
-conn.close()
+        # Create a table with columns based on the CSV headers
+        drop_table_query = f"DROP TABLE IF EXISTS {table_name}"
+        cur.execute(drop_table_query)
+
+        create_table_query = f'CREATE TABLE {table_name} ({', '.join(formatted_create_columns)})'
+        cur.execute(create_table_query)
+
+        placeholders = ', '.join(['?' for _ in formatted_insert_columns])
+        df_selected_columns = df[formatted_insert_columns]
+        for row in df_selected_columns.itertuples(index=False, name=None):
+            insert_query = f'INSERT INTO {table_name} ({", ".join(formatted_insert_columns)}) VALUES ({placeholders})'
+            cur.execute(insert_query, row)
+
+        conn.commit()
+
+    # Close the connection
+    conn.close()
