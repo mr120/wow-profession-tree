@@ -2,6 +2,9 @@ import sqlite3
 import pandas as pd
 import sys
 import os
+import http.client
+import json
+from urllib.parse import urlparse
 
 tables_arr = [
     {
@@ -136,13 +139,44 @@ tables_arr = [
     },
 ]
 
-if __name__ == '__main__':
-    if len(sys.argv) > 1:
-        # Read the first argument after the filename
-        wagoversion = sys.argv[1]
+def fetch_data_from_api(api_url):
+    # Parse the URL
+    parsed_url = urlparse(api_url)
+    conn = http.client.HTTPSConnection(parsed_url.netloc)
+
+    # Make the GET request
+    conn.request("GET", parsed_url.path + ('?' + parsed_url.query if parsed_url.query else ''))
+
+    # Get the response
+    response = conn.getresponse()
+
+    if response.status != 200:
+        raise Exception(f"Failed to fetch data: {response.status} {response.reason}")
+
+    # Read the response data
+    data = response.read()
+
+    # Parse the JSON data into a dictionary
+    json_data = json.loads(data)
+
+    return json_data
+
+def download_file(url, local_path):
+    if not os.path.exists(local_path):
+        print(f"File {local_path} does not exist. Downloading...")
+
+        # Download the file from the URL
+        try:
+            urllib.request.urlretrieve(url, local_path)
+            print(f"File downloaded and saved as {local_path}.")
+        except Exception as e:
+            print(f"Failed to download the file: {e}")
     else:
-        print("No wago version provided.")
-        exit()
+        print(f"File {local_path} already exists. No download needed.")
+
+if __name__ == '__main__':
+    version_data = fetch_data_from_api('https://wago.tools/api/builds/wow_beta/latest')
+    wagoversion = version_data['version']
 
     # Connect to (or create) an SQLite database
     conn = sqlite3.connect('wow_profession_tree.db')
@@ -150,8 +184,9 @@ if __name__ == '__main__':
 
     for table in tables_arr:
         filename = table['filename']
+        file_path = f'data_source/{filename}.{wagoversion}.csv'
 
-        file_path = f'{filename}.{wagoversion}.csv'
+        download_file(f'https://wago.tools/db2/{filename}/csv', file_path)
 
         if not os.path.exists(file_path):
             print(f"The file {file_path} does not exist.")
@@ -189,3 +224,5 @@ if __name__ == '__main__':
 
     # Close the connection
     conn.close()
+
+    print(f"Database regenerated.")

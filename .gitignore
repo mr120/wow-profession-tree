@@ -1,6 +1,9 @@
 *.csv
 *.db
 
+/output/
+/data_source/
+
 ###> ide ###
 /.idea/
 /.vscode/
