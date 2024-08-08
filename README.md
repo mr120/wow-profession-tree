@@ -4,8 +4,6 @@
 
 Make sure you have the following installed:
 - [Python](https://www.python.org/downloads/) (tested with v3)
-- [pip](https://pip.pypa.io/en/stable/installation/)
-- [pandas](https://pypi.org/project/pandas/)
 
 ## Usage
 

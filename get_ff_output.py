@@ -1,6 +1,7 @@
 import sqlite3
 import csv
 import json
+import os
 
 def load_query(filename):
     """Load SQL query from a file."""
@@ -57,5 +58,6 @@ if __name__ == '__main__':
 
     js_str = f'const data = {json_str};'
 
+    os.makedirs(os.path.dirname('output/forgefinder_spell_data.js'), exist_ok=True)
     with open('output/forgefinder_spell_data.js', 'w') as file:
         file.write(js_str)

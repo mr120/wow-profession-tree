@@ -1,10 +1,11 @@
 import sqlite3
-import pandas as pd
+import csv
 import sys
 import os
 import http.client
 import json
-from urllib.parse import urlparse
+import urllib.parse
+import requests
 
 tables_arr = [
     {
@@ -50,7 +51,7 @@ tables_arr = [
             {'name': 'ID', 'type': 'int'},
             {'name': 'ProfessionTraitID', 'type': 'int'},
             {'name': 'ProfessionEffectID', 'type': 'int'},
-            {'name': '_Index', 'type': 'int'},
+            {'name': 'Field_10_0_0_44649_003', 'type': 'int'}, #index
         ]
     },
     {
@@ -133,15 +134,15 @@ tables_arr = [
         'columns': [
             {'name': 'ID', 'type': 'int'},
             {'name': 'Spell', 'type': 'int'},
-            {'name': 'SkillLine', 'type': 'int'},
-            {'name': 'SkillupSkillLineID', 'type': 'int'},
+            {'name': 'SkillLine', 'type': 'int'}, #profID
+            {'name': 'SkillupSkillLineID', 'type': 'int'}, #profIDperexp
         ]
-    },
+    }
 ]
 
 def fetch_data_from_api(api_url):
     # Parse the URL
-    parsed_url = urlparse(api_url)
+    parsed_url = urllib.parse.urlparse(api_url)
     conn = http.client.HTTPSConnection(parsed_url.netloc)
 
     # Make the GET request
@@ -167,8 +168,11 @@ def download_file(url, local_path):
 
         # Download the file from the URL
         try:
-            urllib.request.urlretrieve(url, local_path)
-            print(f"File downloaded and saved as {local_path}.")
+            r = requests.get(url)
+            os.makedirs(os.path.dirname(local_path), exist_ok=True)
+            with open(local_path, 'wb') as outfile:
+                outfile.write(r.content)
+
         except Exception as e:
             print(f"Failed to download the file: {e}")
     else:
@@ -192,9 +196,6 @@ if __name__ == '__main__':
             print(f"The file {file_path} does not exist.")
             exit()
 
-        # Read the CSV file into a pandas DataFrame
-        df = pd.read_csv(file_path)
-
         table_name = table['table_name']
         columns = table['columns']
 
@@ -207,7 +208,6 @@ if __name__ == '__main__':
             # Generate array of '{column name}'
             formatted_insert_columns.append(column['name'])
 
-        # Create a table with columns based on the CSV headers
         drop_table_query = f"DROP TABLE IF EXISTS {table_name}"
         cur.execute(drop_table_query)
 
@@ -215,10 +215,14 @@ if __name__ == '__main__':
         cur.execute(create_table_query)
 
         placeholders = ', '.join(['?' for _ in formatted_insert_columns])
-        df_selected_columns = df[formatted_insert_columns]
-        for row in df_selected_columns.itertuples(index=False, name=None):
-            insert_query = f'INSERT INTO {table_name} ({", ".join(formatted_insert_columns)}) VALUES ({placeholders})'
-            cur.execute(insert_query, row)
+
+        # Read the CSV file and insert the data into the database
+        with open(file_path, newline='') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                insert_query = f'INSERT INTO {table_name} ({", ".join(formatted_insert_columns)}) VALUES ({placeholders})'
+                row_data = tuple(row[column['name']] for column in columns)
+                cur.execute(insert_query, row_data)
 
         conn.commit()
 

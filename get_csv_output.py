@@ -1,5 +1,6 @@
 import sqlite3
 import csv
+import os
 
 def load_query(filename):
     """Load SQL query from a file."""
@@ -28,6 +29,7 @@ if __name__ == '__main__':
     conn.close()
 
     csv_file_path = 'output/profTalentData.csv'
+    os.makedirs(os.path.dirname(csv_file_path), exist_ok=True)
     with open(csv_file_path, 'w', newline='') as csv_file:
         writer = csv.writer(csv_file)
         writer.writerow(column_names)
