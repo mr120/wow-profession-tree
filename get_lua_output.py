@@ -36,8 +36,8 @@ if __name__ == '__main__':
             TraitNodeID = record['TraitNodeID']
             if professionExpansionID not in traitNodes:
                 traitNodes[professionExpansionID] = []
-
-            traitNodes[professionExpansionID].append(TraitNodeID)
+            if TraitNodeID not in traitNodes[professionExpansionID]:
+                traitNodes[professionExpansionID].append(TraitNodeID)
     
     out_path = 'output/traitnodes.lua'
     lua_str = f'TraitNodes = {lua.encode(traitNodes)};'
