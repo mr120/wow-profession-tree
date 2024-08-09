@@ -18,3 +18,9 @@ To generate the spreadsheet, use the following command:
 ```sh
 python get_csv_output.py
 ```
+
+To generate a lua table that can be dropped in to an addon, use the following command:
+
+```sh
+python get_lua_output.py
+```
