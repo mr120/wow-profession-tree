@@ -9,7 +9,8 @@ select
     pet.Name_lang as Stat,
     pe.ModifiedCraftingReagentSlotID,
     sla.SkillLine as ProfessionID,
-    sla.SkillupSkillLineId as ProfessionExpansionID
+    sla.SkillupSkillLineId as ProfessionExpansionID,
+    ss.String_lang as ExpansionName
     --pte.ID as pteID, -- debugging
     --pt.ID as ptID -- debugging
 
@@ -46,6 +47,9 @@ inner join professioneffecttype pet on pe.ProfessionEffectTypeEnumID = pet.EnumI
 
 -- fetch the profession ids
 left join skilllineability sla on sl.SpellID = sla.Spell
+
+left join skillline sk on sk.ID = sla.SkillupSkillLineId
+left join sharedstring ss on ss.ID = sk.ExpansionNameSharedStringID
 
 --where sl.SpellID = 435318 -- debugging
 

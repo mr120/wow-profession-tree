@@ -137,6 +137,22 @@ tables_arr = [
             {'name': 'SkillLine', 'type': 'int'}, #profID
             {'name': 'SkillupSkillLineID', 'type': 'int'}, #profIDperexp
         ]
+    },
+    {
+        'filename': 'SkillLine',
+        'table_name': 'skillline',
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'ExpansionNameSharedStringID', 'type': 'int'},
+        ]
+    },
+    {
+        'filename': 'SharedString',
+        'table_name': 'sharedstring',
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'String_lang', 'type': 'text'},
+        ]
     }
 ]
 
