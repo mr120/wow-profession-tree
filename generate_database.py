@@ -211,7 +211,7 @@ if __name__ == '__main__':
         drop_table_query = f"DROP TABLE IF EXISTS {table_name}"
         cur.execute(drop_table_query)
 
-        create_table_query = f'CREATE TABLE {table_name} ({', '.join(formatted_create_columns)})'
+        create_table_query = f'CREATE TABLE {table_name} ({", ".join(formatted_create_columns)})'
         cur.execute(create_table_query)
 
         placeholders = ', '.join(['?' for _ in formatted_insert_columns])
