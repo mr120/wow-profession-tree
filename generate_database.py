@@ -6,6 +6,7 @@ import http.client
 import json
 import urllib.parse
 import requests
+from pathlib import Path
 
 tables_arr = [
     {
@@ -137,7 +138,103 @@ tables_arr = [
             {'name': 'SkillLine', 'type': 'int'}, #profID
             {'name': 'SkillupSkillLineID', 'type': 'int'}, #profIDperexp
         ]
-    }
+    },
+    {
+        'filename': 'CraftingOrder',
+        'table_name': 'craftingorder',
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'SkillLineAbilityID', 'type': 'int'},
+        ]
+    },
+    {
+        'filename': 'ModifiedCraftingSpellSlot',
+        'table_name': 'modifiedcraftingspellslot',
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'SpellID', 'type': 'int'},
+            {'name': 'Slot', 'type': 'int'},
+            {'name': 'ModifiedCraftingReagentSlotID', 'type': 'int'},
+            {'name': 'ReagentCount', 'type': 'int'},
+            {'name': 'ReagentReCraftCount', 'type': 'int'},
+        ]
+    },
+    {
+        'filename': 'SpellReagents',
+        'table_name': 'spellreagents',
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'SpellID', 'type': 'int'},
+            {'name': 'Reagent_0', 'type': 'int'},
+            {'name': 'Reagent_1', 'type': 'int'},
+            {'name': 'Reagent_2', 'type': 'int'},
+            {'name': 'Reagent_3', 'type': 'int'},
+            {'name': 'Reagent_4', 'type': 'int'},
+            {'name': 'Reagent_5', 'type': 'int'},
+            {'name': 'Reagent_6', 'type': 'int'},
+            {'name': 'ReagentCount_0', 'type': 'int'},
+            {'name': 'ReagentCount_1', 'type': 'int'},
+            {'name': 'ReagentCount_2', 'type': 'int'},
+            {'name': 'ReagentCount_3', 'type': 'int'},
+            {'name': 'ReagentCount_4', 'type': 'int'},
+            {'name': 'ReagentCount_5', 'type': 'int'},
+            {'name': 'ReagentCount_6', 'type': 'int'},
+            {'name': 'ReagentReCraftCount_0', 'type': 'int'},
+            {'name': 'ReagentReCraftCount_1', 'type': 'int'},
+            {'name': 'ReagentReCraftCount_2', 'type': 'int'},
+            {'name': 'ReagentReCraftCount_3', 'type': 'int'},
+            {'name': 'ReagentReCraftCount_4', 'type': 'int'},
+            {'name': 'ReagentReCraftCount_5', 'type': 'int'},
+            {'name': 'ReagentReCraftCount_6', 'type': 'int'},
+        ]
+    },
+    #hold diff
+    {
+        'filename': 'CraftingData',
+        'table_name': 'craftingdata',
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'CraftingDifficulty', 'type': 'int'},
+        ]
+    },
+    {
+        'filename': 'CraftingDataItemQuality',
+        'table_name': 'craftingdataitemquality',
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'ItemID', 'type': 'int'},
+            {'name': 'CraftingDataID', 'type': 'int'},
+        ]
+    },
+    {
+        'filename': 'SpellEffect',
+        'table_name': 'spelleffect',
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'EffectAura', 'type': 'int'},
+            {'name': 'EffectIndex', 'type': 'int'},
+            {'name': 'EffectBasePointsF', 'type': 'int'},
+            {'name': 'EffectMiscValue_0', 'type': 'int'},
+            {'name': 'SpellID', 'type': 'int'},
+        ]
+    },
+    {
+        'filename': 'SkillLine',
+        'table_name': 'skillline',
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'DisplayName_lang', 'type': 'text'},
+        ]
+    },
+    {
+        'filename': 'SpellMisc',
+        'table_name': 'spellmisc',
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'Attributes_0', 'type': 'text'},
+            {'name': 'SpellID', 'type': 'int'},
+        ]
+    },
 ]
 
 def fetch_data_from_api(api_url):
@@ -183,12 +280,12 @@ if __name__ == '__main__':
     wagoversion = version_data['version']
 
     # Connect to (or create) an SQLite database
-    conn = sqlite3.connect('wow_profession_tree.db')
+    conn = sqlite3.connect((Path(__file__).parent / 'wow_profession_tree.db').resolve())
     cur = conn.cursor()
 
     for table in tables_arr:
         filename = table['filename']
-        file_path = f'data_source/{filename}.{wagoversion}.csv'
+        file_path = (Path(__file__).parent / f'data_source/{filename}.{wagoversion}.csv').resolve()
 
         download_file(f'https://wago.tools/db2/{filename}/csv', file_path)
 

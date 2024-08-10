@@ -2,6 +2,7 @@ import sqlite3
 import csv
 import json
 import os
+from pathlib import Path
 
 def load_query(filename):
     """Load SQL query from a file."""
@@ -18,11 +19,11 @@ def execute_query(db_connection, query_file, params):
 
 
 if __name__ == '__main__':
-    conn = sqlite3.connect('wow_profession_tree.db')
+    conn = sqlite3.connect((Path(__file__).parent / '../wow_profession_tree.db').resolve())
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
 
-    query = 'select_all_spell_data.sql'
+    query = (Path(__file__).parent / 'select_all_spell_data.sql').resolve()
     cur = execute_query(conn, query,  ())
     
     rows = cur.fetchall()
@@ -58,6 +59,9 @@ if __name__ == '__main__':
 
     js_str = f'const data = {json_str};'
 
-    os.makedirs(os.path.dirname('output/forgefinder_spell_data.js'), exist_ok=True)
-    with open('output/forgefinder_spell_data.js', 'w') as file:
+    output_file_path = (Path(__file__).parent / '../output/general_profession_traits.csv').resolve()
+    os.makedirs(os.path.dirname(output_file_path), exist_ok=True)
+    with open(output_file_path, 'w') as file:
         file.write(js_str)
+
+    print(f'The query results have been exported to {output_file_path}.')

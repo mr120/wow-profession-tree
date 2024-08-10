@@ -1,6 +1,7 @@
 import sqlite3
 import csv
-from prettytable import PrettyTable
+import os
+from pathlib import Path
 
 def load_query(filename):
     """Load SQL query from a file."""
@@ -15,13 +16,11 @@ def execute_query(db_connection, query_file, params):
     db_connection.commit()
     return cursor
 
-
 if __name__ == '__main__':
-    conn = sqlite3.connect('wow_profession_tree.db')
+    conn = sqlite3.connect((Path(__file__).parent / '../wow_profession_tree.db').resolve())
     conn.row_factory = sqlite3.Row
-    cur = conn.cursor()
 
-    query = 'select_all_spell_data.sql'
+    query = (Path(__file__).parent / 'select_all_profession_buffs_data.sql').resolve()
     cur = execute_query(conn, query,  ())
 
     rows = cur.fetchall()
@@ -30,10 +29,11 @@ if __name__ == '__main__':
 
     conn.close()
 
-    table = PrettyTable()
+    output_file_path = (Path(__file__).parent / '../output/general_buff_traits.csv').resolve()
+    os.makedirs(os.path.dirname(output_file_path), exist_ok=True)
+    with open(output_file_path, 'w', newline='') as csv_file:
+        writer = csv.writer(csv_file)
+        writer.writerow(column_names)
+        writer.writerows(rows)
 
-    table.field_names = column_names
-    for row in rows:
-        table.add_row(row)
-
-    print(table)
+    print(f'The query results have been exported to {output_file_path}.')
