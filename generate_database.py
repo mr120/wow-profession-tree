@@ -10,146 +10,36 @@ from pathlib import Path
 
 tables_arr = [
     {
-        'filename': 'SpellLabel',
-        'table_name': 'spelllabel',
+        'name': 'CraftingData',
         'columns': [
             {'name': 'ID', 'type': 'int'},
-            {'name': 'LabelID', 'type': 'int'},
-            {'name': 'SpellID', 'type': 'int'},
+            {'name': 'CraftingDifficulty', 'type': 'int'},
         ]
     },
     {
-        'filename': 'ProfessionEffect',
-        'table_name': 'professioneffect',
+        'name': 'CraftingDataItemQuality',
         'columns': [
             {'name': 'ID', 'type': 'int'},
-            {'name': 'ProfessionEffectTypeEnumID', 'type': 'int'},
-            {'name': 'Amount', 'type': 'int'},
-            {'name': 'ModifiedCraftingReagentSlotID', 'type': 'int'},
+            {'name': 'ItemID', 'type': 'int'},
+            {'name': 'CraftingDataID', 'type': 'int'},
         ]
     },
     {
-        'filename': 'ProfessionEffectType',
-        'table_name': 'professioneffecttype',
-        'columns': [
-            {'name': 'ID', 'type': 'int'},
-            {'name': 'Name_lang', 'type': 'text'},
-            {'name': 'EnumID', 'type': 'int'},
-        ]
-    },
-    {
-        'filename': 'ProfessionTrait',
-        'table_name': 'professiontrait',
-        'columns': [
-            {'name': 'ID', 'type': 'int'},
-            {'name': 'TraitDefinitionID', 'type': 'int'},
-        ]
-    },
-    {
-        'filename': 'ProfessionTraitXEffect',
-        'table_name': 'professiontraitXeffect',
-        'columns': [
-            {'name': 'ID', 'type': 'int'},
-            {'name': 'ProfessionTraitID', 'type': 'int'},
-            {'name': 'ProfessionEffectID', 'type': 'int'},
-            {'name': 'Field_10_0_0_44649_003', 'type': 'int'}, #index
-        ]
-    },
-    {
-        'filename': 'ProfessionTraitXLabel',
-        'table_name': 'professiontraitXlabel',
-        'columns': [
-            {'name': 'ID', 'type': 'int'},
-            {'name': 'ProfessionTraitID', 'type': 'int'},
-            {'name': 'LabelID', 'type': 'int'},
-        ]
-    },
-    {
-        'filename': 'TraitDefinition',
-        'table_name': 'traitdefinition',
-        'columns': [
-            {'name': 'ID', 'type': 'int'},
-            {'name': 'OverrideName_lang', 'type': 'text'},
-            {'name': 'OverrideSubtext_lang', 'type': 'text'},
-            {'name': 'OverrideDescription_lang', 'type': 'text'},
-            {'name': 'SpellID', 'type': 'int'},
-            {'name': 'OverrideIcon', 'type': 'int'},
-            {'name': 'OverridesSpellID', 'type': 'int'},
-            {'name': 'VisibleSpellID', 'type': 'int'},
-        ]
-    },
-    {
-        'filename': 'TraitNodeXTraitNodeEntry',
-        'table_name': 'traitnodeXtraitnodeentry',
-        'columns': [
-            {'name': 'ID', 'type': 'int'},
-            {'name': 'TraitNodeID', 'type': 'int'},
-            {'name': 'TraitNodeEntryID', 'type': 'int'},
-            {'name': '_Index', 'type': 'int'},
-        ]
-    },
-    {
-        'filename': 'TraitNodeEntry',
-        'table_name': 'traitnodeentry',
-        'columns': [
-            {'name': 'ID', 'type': 'int'},
-            {'name': 'TraitDefinitionID', 'type': 'int'},
-            {'name': 'MaxRanks', 'type': 'int'},
-            {'name': 'NodeEntryType', 'type': 'int'},
-            {'name': 'TraitSubTreeID', 'type': 'int'},
-        ]
-    },
-    {
-        'filename': 'TraitNodeGroupXTraitNode',
-        'table_name': 'traitnodegroupXtraitnode',
-        'columns': [
-            {'name': 'ID', 'type': 'int'},
-            {'name': 'TraitNodeGroupID', 'type': 'int'},
-            {'name': 'TraitNodeID', 'type': 'int'},
-            {'name': '_Index', 'type': 'int'},
-        ]
-    },
-    {
-        'filename': 'TraitCond',
-        'table_name': 'traitcond',
-        'columns': [
-            {'name': 'ID', 'type': 'int'},
-            {'name': 'TraitTreeID', 'type': 'int'},
-            {'name': 'TraitNodeGroupID', 'type': 'int'},
-            {'name': 'TraitNodeID', 'type': 'int'},
-            {'name': 'SpentAmountRequired', 'type': 'int'},
-        ]
-    },
-    {
-        'filename': 'TraitNodeXTraitCond',
-        'table_name': 'traitnodeXtraitcond',
-        'columns': [
-            {'name': 'ID', 'type': 'int'},
-            {'name': 'TraitCondID', 'type': 'int'},
-            {'name': 'TraitNodeID', 'type': 'int'},
-        ]
-    },
-    {
-        'filename': 'SkillLineAbility',
-        'table_name': 'skilllineability',
-        'columns': [
-            {'name': 'ID', 'type': 'int'},
-            {'name': 'Spell', 'type': 'int'},
-            {'name': 'SkillLine', 'type': 'int'}, #profID
-            {'name': 'SkillupSkillLineID', 'type': 'int'}, #profIDperexp
-        ]
-    },
-    {
-        'filename': 'CraftingOrder',
-        'table_name': 'craftingorder',
+        'name': 'CraftingOrder',
         'columns': [
             {'name': 'ID', 'type': 'int'},
             {'name': 'SkillLineAbilityID', 'type': 'int'},
         ]
     },
     {
-        'filename': 'ModifiedCraftingSpellSlot',
-        'table_name': 'modifiedcraftingspellslot',
+        'name': 'ItemEffect',
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'SpellID', 'type': 'int'},
+        ]
+    },
+    {
+        'name': 'ModifiedCraftingSpellSlot',
         'columns': [
             {'name': 'ID', 'type': 'int'},
             {'name': 'SpellID', 'type': 'int'},
@@ -160,8 +50,100 @@ tables_arr = [
         ]
     },
     {
-        'filename': 'SpellReagents',
-        'table_name': 'spellreagents',
+        'name': 'ProfessionEffect',
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'ProfessionEffectTypeEnumID', 'type': 'int'},
+            {'name': 'Amount', 'type': 'int'},
+            {'name': 'ModifiedCraftingReagentSlotID', 'type': 'int'},
+        ]
+    },
+    {
+        'name': 'ProfessionEffectType',
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'Name_lang', 'type': 'text'},
+            {'name': 'EnumID', 'type': 'int'},
+        ]
+    },
+    {
+        'name': 'ProfessionTrait',
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'TraitDefinitionID', 'type': 'int'},
+        ]
+    },
+    {
+        'name': 'ProfessionTraitXEffect',
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'ProfessionTraitID', 'type': 'int'},
+            {'name': 'ProfessionEffectID', 'type': 'int'},
+            {'name': 'Field_10_0_0_44649_003', 'type': 'int'}, #index
+        ]
+    },
+    {
+        'name': 'ProfessionTraitXLabel',
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'ProfessionTraitID', 'type': 'int'},
+            {'name': 'LabelID', 'type': 'int'},
+        ]
+    },
+    {
+        'name': 'SkillLine',
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'DisplayName_lang', 'type': 'text'},
+        ]
+    },
+    {
+        'name': 'SkillLineAbility',
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'Spell', 'type': 'int'},
+            {'name': 'SkillLine', 'type': 'int'}, #profID
+            {'name': 'SkillupSkillLineID', 'type': 'int'}, #profIDperexp
+        ]
+    },
+    {
+        'name': 'SpellAuraOptions',
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'CumulativeAura', 'type': 'int'},
+            {'name': 'SpellID', 'type': 'int'},
+        ]
+    },
+    {
+        'name': 'SpellLabel',
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'LabelID', 'type': 'int'},
+            {'name': 'SpellID', 'type': 'int'},
+        ]
+    },
+    {
+        'name': 'SpellEffect',
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'EffectAura', 'type': 'int'},
+            {'name': 'EffectIndex', 'type': 'int'},
+            {'name': 'EffectTriggerSpell', 'type': 'int'},
+            {'name': 'EffectBasePointsF', 'type': 'int'},
+            {'name': 'EffectMiscValue_0', 'type': 'int'},
+            {'name': 'SpellID', 'type': 'int'},
+        ]
+    },
+    {
+        'name': 'SpellMisc',
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'Attributes_0', 'type': 'text'},
+            {'name': 'SpellID', 'type': 'int'},
+        ]
+    },
+    {
+        'name': 'SpellReagents',
         'columns': [
             {'name': 'ID', 'type': 'int'},
             {'name': 'SpellID', 'type': 'int'},
@@ -188,51 +170,63 @@ tables_arr = [
             {'name': 'ReagentReCraftCount_6', 'type': 'int'},
         ]
     },
-    #hold diff
     {
-        'filename': 'CraftingData',
-        'table_name': 'craftingdata',
+        'name': 'TraitCond',
         'columns': [
             {'name': 'ID', 'type': 'int'},
-            {'name': 'CraftingDifficulty', 'type': 'int'},
+            {'name': 'TraitTreeID', 'type': 'int'},
+            {'name': 'TraitNodeGroupID', 'type': 'int'},
+            {'name': 'TraitNodeID', 'type': 'int'},
+            {'name': 'SpentAmountRequired', 'type': 'int'},
         ]
     },
     {
-        'filename': 'CraftingDataItemQuality',
-        'table_name': 'craftingdataitemquality',
+        'name': 'TraitDefinition',
         'columns': [
             {'name': 'ID', 'type': 'int'},
-            {'name': 'ItemID', 'type': 'int'},
-            {'name': 'CraftingDataID', 'type': 'int'},
-        ]
-    },
-    {
-        'filename': 'SpellEffect',
-        'table_name': 'spelleffect',
-        'columns': [
-            {'name': 'ID', 'type': 'int'},
-            {'name': 'EffectAura', 'type': 'int'},
-            {'name': 'EffectIndex', 'type': 'int'},
-            {'name': 'EffectBasePointsF', 'type': 'int'},
-            {'name': 'EffectMiscValue_0', 'type': 'int'},
+            {'name': 'OverrideName_lang', 'type': 'text'},
+            {'name': 'OverrideSubtext_lang', 'type': 'text'},
+            {'name': 'OverrideDescription_lang', 'type': 'text'},
             {'name': 'SpellID', 'type': 'int'},
+            {'name': 'OverrideIcon', 'type': 'int'},
+            {'name': 'OverridesSpellID', 'type': 'int'},
+            {'name': 'VisibleSpellID', 'type': 'int'},
         ]
     },
     {
-        'filename': 'SkillLine',
-        'table_name': 'skillline',
+        'name': 'TraitNodeEntry',
         'columns': [
             {'name': 'ID', 'type': 'int'},
-            {'name': 'DisplayName_lang', 'type': 'text'},
+            {'name': 'TraitDefinitionID', 'type': 'int'},
+            {'name': 'MaxRanks', 'type': 'int'},
+            {'name': 'NodeEntryType', 'type': 'int'},
+            {'name': 'TraitSubTreeID', 'type': 'int'},
         ]
     },
     {
-        'filename': 'SpellMisc',
-        'table_name': 'spellmisc',
+        'name': 'TraitNodeGroupXTraitNode',
         'columns': [
             {'name': 'ID', 'type': 'int'},
-            {'name': 'Attributes_0', 'type': 'text'},
-            {'name': 'SpellID', 'type': 'int'},
+            {'name': 'TraitNodeGroupID', 'type': 'int'},
+            {'name': 'TraitNodeID', 'type': 'int'},
+            {'name': '_Index', 'type': 'int'},
+        ]
+    },
+    {
+        'name': 'TraitNodeXTraitCond',
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'TraitCondID', 'type': 'int'},
+            {'name': 'TraitNodeID', 'type': 'int'},
+        ]
+    },
+    {
+        'name': 'TraitNodeXTraitNodeEntry',
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'TraitNodeID', 'type': 'int'},
+            {'name': 'TraitNodeEntryID', 'type': 'int'},
+            {'name': '_Index', 'type': 'int'},
         ]
     },
 ]
@@ -284,7 +278,7 @@ if __name__ == '__main__':
     cur = conn.cursor()
 
     for table in tables_arr:
-        filename = table['filename']
+        filename = table['name']
         file_path = (Path(__file__).parent / f'data_source/{filename}.{wagoversion}.csv').resolve()
 
         download_file(f'https://wago.tools/db2/{filename}/csv', file_path)
@@ -293,7 +287,7 @@ if __name__ == '__main__':
             print(f"The file {file_path} does not exist.")
             exit()
 
-        table_name = table['table_name']
+        table_name = table['name']
         columns = table['columns']
 
         formatted_create_columns = []

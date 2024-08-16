@@ -41,9 +41,6 @@ if __name__ == '__main__':
         amount = record['Amount']
         ranks = record['MaxRanks']
 
-        if stat not in ['Multicraft', 'Skill', 'Ingenuity', 'Resourcefulness']:
-            continue
-
         # If the spellID is not in the result dictionary, add it
         if spell_id not in jsonProfessionsData:
             jsonProfessionsData[spell_id] = {}
@@ -59,7 +56,7 @@ if __name__ == '__main__':
 
     js_str = f'const data = {json_str};'
 
-    output_file_path = (Path(__file__).parent / '../output/general_profession_traits.csv').resolve()
+    output_file_path = (Path(__file__).parent / '../output/js_profession_traits.js').resolve()
     os.makedirs(os.path.dirname(output_file_path), exist_ok=True)
     with open(output_file_path, 'w') as file:
         file.write(js_str)

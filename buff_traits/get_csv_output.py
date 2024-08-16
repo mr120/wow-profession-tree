@@ -29,7 +29,7 @@ if __name__ == '__main__':
 
     conn.close()
 
-    output_file_path = (Path(__file__).parent / '../output/general_buff_traits.csv').resolve()
+    output_file_path = (Path(__file__).parent / '../output/csv_buff_traits.csv').resolve()
     os.makedirs(os.path.dirname(output_file_path), exist_ok=True)
     with open(output_file_path, 'w', newline='') as csv_file:
         writer = csv.writer(csv_file)
