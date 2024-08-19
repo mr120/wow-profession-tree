@@ -95,6 +95,16 @@ tables_arr = [
         'columns': [
             {'name': 'ID', 'type': 'int'},
             {'name': 'DisplayName_lang', 'type': 'text'},
+            {'name': 'ParentSkillLineID', 'type': 'int'},
+        ]
+    },
+    {
+        'name': 'SkillLineXTraitTree',
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'SkillLineID', 'type': 'int'},
+            {'name': 'TraitTreeID', 'type': 'int'},
+            {'name': 'Variant', 'type': 'int'},
         ]
     },
     {
@@ -191,6 +201,13 @@ tables_arr = [
             {'name': 'OverrideIcon', 'type': 'int'},
             {'name': 'OverridesSpellID', 'type': 'int'},
             {'name': 'VisibleSpellID', 'type': 'int'},
+        ]
+    },
+    {
+        'name': 'TraitNode',
+        'columns': [
+            {'name': 'ID', 'type': 'int'},
+            {'name': 'TraitTreeID', 'type': 'int'},
         ]
     },
     {
