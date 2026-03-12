@@ -69,7 +69,16 @@ where sltt.SkillLineID in (
     2875,
     2874,
     2879,
-    2878
+    2878,
+
+    2907,
+    2915,
+    2906,
+    2918,
+    2910,
+    2909,
+    2914,
+    2913
 )
 
 group by pt.ID, pte.ID, sl.SpellID
