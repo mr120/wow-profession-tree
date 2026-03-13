@@ -298,7 +298,7 @@ if __name__ == '__main__':
         filename = table['name']
         file_path = (Path(__file__).parent / f'data_source/{filename}.{wagoversion}.csv').resolve()
 
-        download_file(f'https://wago.tools/db2/{filename}/csv', file_path)
+        download_file(f'https://wago.tools/db2/{filename}/csv?build={wagoversion}', file_path)
 
         if not os.path.exists(file_path):
             print(f"The file {file_path} does not exist.")
